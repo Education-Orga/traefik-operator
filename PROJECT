@@ -7,4 +7,14 @@ layout:
 - go.kubebuilder.io/v4
 projectName: traefik-operator-1
 repo: github.com/Education-Orga/traefik-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: mh.edu.com
+  group: traefik
+  kind: TraefikInstance
+  path: github.com/Education-Orga/traefik-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"

@@ -1,0 +1,12 @@
+apiVersion: traefik.mh.edu.com/v1alpha1
+kind: TraefikInstance
+metadata:
+  labels:
+    app.kubernetes.io/name: traefikinstance
+    app.kubernetes.io/instance: traefikinstance-sample
+    app.kubernetes.io/part-of: traefik-operator-1
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: traefik-operator-1
+  name: traefikinstance-sample
+spec:
+  # TODO(user): Add fields here

@@ -1,0 +1,27 @@
+# permissions for end users to view traefikinstances.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: traefikinstance-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: traefik-operator-1
+    app.kubernetes.io/part-of: traefik-operator-1
+    app.kubernetes.io/managed-by: kustomize
+  name: traefikinstance-viewer-role
+rules:
+- apiGroups:
+  - traefik.mh.edu.com
+  resources:
+  - traefikinstances
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - traefik.mh.edu.com
+  resources:
+  - traefikinstances/status
+  verbs:
+  - get
