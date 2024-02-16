@@ -1,0 +1,8 @@
+apiVersion: traefik.mh.edu.com/v1alpha1
+kind: TraefikInstance
+metadata:
+  name: traefik-sample
+spec:
+  image: "traefik:v2.4"
+  replicas: 2
+  additionalArgs: ["--log.level=DEBUG"]
