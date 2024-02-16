@@ -28,14 +28,26 @@ type TraefikInstanceSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of TraefikInstance. Edit traefikinstance_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Image represents the Docker image of Traefik LB
+	Image string `json:"image"`
+
+	// Replicas represents the number of Traefik instances.
+	// +optional
+	Replicas *int32 `json:"replicas,omitempty"`
+
+	// AdditionalArgs are additional starting arguments for the Traefik container.
+	// +optional
+	AdditionalArgs []string `json:"additionalArgs,omitempty"`
 }
 
 // TraefikInstanceStatus defines the observed state of TraefikInstance
 type TraefikInstanceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// AvailableReplicas represents the number of available Traefik pod instances.
+	// +optional
+	AvailableReplicas int32 `json:"availableReplicas,omitempty"`
 }
 
 //+kubebuilder:object:root=true
