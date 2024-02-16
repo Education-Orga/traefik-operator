@@ -70,8 +70,9 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: controller:latest
+        image: traefik-operator-v2:latest
         name: manager
+        imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

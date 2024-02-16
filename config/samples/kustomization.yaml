@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- traefik_v1alpha1_traefikinstance.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

@@ -10,7 +10,8 @@ kubebuilder init --domain mh.edu.com --repo github.com/Education-Orga/traefik-op
 
 ### 2. API Creation
 ```shell
-xxx
+# kind TraefikInstance
+kubebuilder create api --group traefik --version v1alpha1 --kind TraefikInstance
 ```
 
 ### 3. Business Logic
@@ -22,8 +23,21 @@ xxx
 xxx
 
 ## Run the operator
-### Prequirerties
+### 1. Local outside of a cluster
+Clone the repository and run:
+```shell
+make run
+```
+### 2. Docker deployment inside of a cluster
+Clone the repository and run:
+```shell
+# build the docker image 
+make docker-build IMG=<image-name>
 
-### Make 
+# push the docker image 
+make docker-push IMG=<image-name>
 
-### Helm
+# deploy the operator to the cluster
+make deploy
+```
+### 3. Use the Helm Chart
