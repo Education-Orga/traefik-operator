@@ -1,0 +1,66 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.13.0
+  name: traefikinstances.traefik.mh.edu.com
+spec:
+  group: traefik.mh.edu.com
+  names:
+    kind: TraefikInstance
+    listKind: TraefikInstanceList
+    plural: traefikinstances
+    singular: traefikinstance
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: TraefikInstance is the Schema for the traefikinstances API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: TraefikInstanceSpec defines the desired state of TraefikInstance
+            properties:
+              additionalArgs:
+                description: AdditionalArgs are additional starting arguments for
+                  the Traefik container.
+                items:
+                  type: string
+                type: array
+              image:
+                description: Image represents the Docker image of Traefik LB
+                type: string
+              replicas:
+                description: Replicas represents the number of Traefik instances.
+                format: int32
+                type: integer
+            required:
+            - image
+            type: object
+          status:
+            description: TraefikInstanceStatus defines the observed state of TraefikInstance
+            properties:
+              availableReplicas:
+                description: AvailableReplicas represents the number of available
+                  Traefik pod instances.
+                format: int32
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
