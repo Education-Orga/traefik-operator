@@ -25,6 +25,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	traefikv1alpha1 "github.com/Education-Orga/traefik-operator/api/v1alpha1"
+	deploy "github.com/Education-Orga/traefik-operator/pkg/deployment"
 )
 
 // TraefikInstanceReconciler reconciles a TraefikInstance object
@@ -49,7 +50,18 @@ type TraefikInstanceReconciler struct {
 func (r *TraefikInstanceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// Fetch the TraefikInstance instance
+	var traefikInstance traefikv1alpha1.TraefikInstance
+	if err := r.Get(ctx, req.NamespacedName, &traefikInstance); err != nil {
+		log.Log.Error(err, "unable to fetch TraefikInstance")
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	// Execute Traefik deployment
+	if err := deploy.ExecuteTraefikDeployment(ctx, r.Client, r.Scheme, &traefikInstance, traefikInstance.Namespace); err != nil {
+		log.Log.Error(err, "failed to deploy Traefik")
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }
