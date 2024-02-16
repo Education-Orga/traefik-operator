@@ -58,7 +58,7 @@ func (r *TraefikInstanceReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	}
 
 	// Execute Traefik deployment
-	if err := deploy.ExecuteTraefikDeployment(ctx, r.Client, r.Scheme, &traefikInstance, traefikInstance.Namespace); err != nil {
+	if err := deploy.ControlTraefikDeployment(ctx, r.Client, r.Scheme, &traefikInstance, traefikInstance.Namespace); err != nil {
 		log.Log.Error(err, "failed to deploy Traefik")
 		return ctrl.Result{}, err
 	}

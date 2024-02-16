@@ -10,31 +10,38 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func ExecuteTraefikDeployment(ctx context.Context, k8sClient client.Client, scheme *runtime.Scheme, traefikInstance *traefikv1alpha1.TraefikInstance, namespace string) error {
+func ControlTraefikDeployment(ctx context.Context, k8sClient client.Client, scheme *runtime.Scheme, traefikInstance *traefikv1alpha1.TraefikInstance, namespace string) error {
 
-	deployment := initTraefikDeployment(traefikInstance, scheme, namespace)
+	desiredDeployment := initTraefikDeployment(traefikInstance, scheme, namespace)
 
 	// Set controller reference for CR TraefikInstance.
-	if err := ctrl.SetControllerReference(traefikInstance, deployment, scheme); err != nil {
+	if err := ctrl.SetControllerReference(traefikInstance, desiredDeployment, scheme); err != nil {
 		return err
 	}
 
 	// Check if Traefik deployment exists.
-	found := &appsv1.Deployment{}
-	err := k8sClient.Get(ctx, types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, found)
+	actualDeployment := &appsv1.Deployment{}
+	err := k8sClient.Get(ctx, types.NamespacedName{Name: desiredDeployment.Name, Namespace: desiredDeployment.Namespace}, actualDeployment)
 	if err != nil && errors.IsNotFound(err) {
 		// Create new deployment.
-		fmt.Println("Creating a new Traefik deployment", "Namespace", deployment.Namespace, "Name", deployment.Name)
-		err = k8sClient.Create(ctx, deployment)
-		if err != nil {
+		fmt.Println("Creating a new Traefik deployment", "Namespace", desiredDeployment.Namespace, "Name", desiredDeployment.Name)
+		if err = k8sClient.Create(ctx, desiredDeployment); err != nil {
 			return err
 		}
-	} else if err != nil {
-		return err
+	} else if err == nil {
+		// Update deployment.
+		if !reflect.DeepEqual(desiredDeployment.Spec, actualDeployment.Spec) {
+			// Aktualisiere das aktuelle Deployment mit den Spezifikationen des gewünschten Deployments
+			actualDeployment.Spec = desiredDeployment.Spec
+			if err = k8sClient.Update(ctx, desiredDeployment); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
