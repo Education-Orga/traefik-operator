@@ -4,5 +4,5 @@ metadata:
   name: traefik-sample
 spec:
   image: "traefik:v2.4"
-  replicas: 2
+  replicas: 8
   additionalArgs: ["--log.level=DEBUG"]
