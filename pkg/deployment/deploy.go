@@ -48,6 +48,10 @@ func ControlTraefikDeployment(ctx context.Context, k8sClient client.Client, sche
 }
 
 func initTraefikDeployment(traefikInstance *traefikv1alpha1.TraefikInstance, scheme *runtime.Scheme, namespace string) *appsv1.Deployment {
+
+	// base configuration args for Traefik
+	traefikArgs := initTraefikBaseConfiguration(traefikInstance)
+
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      traefikInstance.Name,
@@ -63,15 +67,35 @@ func initTraefikDeployment(traefikInstance *traefikv1alpha1.TraefikInstance, sch
 					Labels: map[string]string{"app": "traefik"},
 				},
 				Spec: corev1.PodSpec{
+					ServiceAccountName: "traefik-service-account",
 					Containers: []corev1.Container{
 						{
 							Name:  "traefik",
 							Image: traefikInstance.Spec.Image,
-							Args:  []string{"--api.insecure=true", "--accesslog", "--entrypoints.web.Address=:80"},
+							Args:  traefikArgs,
 						},
 					},
 				},
 			},
 		},
 	}
+}
+
+func initTraefikBaseConfiguration(traefikInstance *traefikv1alpha1.TraefikInstance) []string {
+
+	// base configuration args for Traefik
+	traefikArgs := []string{
+		"--api.insecure=true",
+		"--accesslog",
+		"--entrypoints.web.Address=:80",
+		"--providers.kubernetescrd", // activate Kubernetes CRD provider for interacting with CR IngressRoute from traefik.io
+		"--log.level=DEBUG",
+	}
+
+	// add additional args specified in CR
+	if len(traefikInstance.Spec.AdditionalArgs) > 0 {
+		traefikArgs = append(traefikArgs, traefikInstance.Spec.AdditionalArgs...)
+	}
+
+	return traefikArgs
 }

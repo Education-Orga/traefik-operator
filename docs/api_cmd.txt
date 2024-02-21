@@ -27,3 +27,8 @@ kubectl port-forward <pod-name> 8080:8080
 __________________________________________
 Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
+
+
+traefik.io CRDs
+______________
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml

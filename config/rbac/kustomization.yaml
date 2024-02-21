@@ -18,3 +18,8 @@ resources:
 - auth_proxy_client_clusterrole.yaml
 - deployment_clusterrole.yaml
 - deployment_clusterrole_binding.yaml
+- traefik_ingress_controller_clusterrole.yaml
+- traefik_ingress_controller_clusterrole_binding.yaml
+- traefik_service_account.yaml
+- traefikio_clusterrole.yaml
+- traefikio_clusterrole_binding.yaml
