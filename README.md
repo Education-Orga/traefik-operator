@@ -15,9 +15,9 @@ kubebuilder create api --group traefik --version v1alpha1 --kind TraefikInstance
 ```
 
 ### 3. Business Logic
-- CR Development
-- Custom Controller Logic
-- Reconcile Integration
+- CR Development of kind TraefikInstance
+- Custom Controller Logic /pkg/deployment/deploy.go
+- Reconcile: integration of business logic /internal/traefikinstance_controller.go
 
 ## Testing
 xxx
@@ -39,5 +39,7 @@ make docker-push IMG=<image-name>
 
 # deploy the operator to the cluster
 make deploy
+
+# undeploy the operator to the cluster
+make undeploy
 ```
-### 3. Use the Helm Chart
