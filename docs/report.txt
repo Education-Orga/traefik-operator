@@ -1,0 +1,81 @@
+1. Project Setup
+___________________________
+kubebuilder init --domain mh.edu.com --repo github.com/Education-Orga/traefik-operator
+
+2. API Creation
+___________________________
+kubebuilder create api --group traefik --version v1alpha1 --kind TraefikInstance
+
+3. Implement Custom Controller Logic (Business Logic)
+- create pkg-dir
+- modify Spec Types
+- implement business logic
+- integrate to Reconcile
+
+4. Lokal Testing
+___________________________
+
+- make generate
+______________
+/Users/manuelhaugg/HFU_BAM_Master/Thesis/projects/production/traefik-operator-1/bin/controller-gen object:headerFile="hack/boilerplate.go.txt" paths="./..."
+
+- make install
+______________
+/Users/manuelhaugg/HFU_BAM_Master/Thesis/projects/production/traefik-operator-1/bin/controller-gen rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+test -s /Users/manuelhaugg/HFU_BAM_Master/Thesis/projects/production/traefik-operator-1/bin/kustomize || GOBIN=/Users/manuelhaugg/HFU_BAM_Master/Thesis/projects/production/traefik-operator-1/bin GO111MODULE=on go install sigs.k8s.io/kustomize/kustomize/v5@v5.2.1
+# sigs.k8s.io/kustomize/kustomize/v5
+ld: warning: -bind_at_load is deprecated on macOS
+/Users/manuelhaugg/HFU_BAM_Master/Thesis/projects/production/traefik-operator-1/bin/kustomize build config/crd | kubectl apply -f -
+customresourcedefinition.apiextensions.k8s.io/traefikinstances.traefik.mh.edu.com created
+
+- make run
+
+- deploy CR
+
+- deploy traefik.io CRDs
+______________
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+
+- access dashboard
+__________________________________________
+kubectl port-forward <pod-name> 8080:8080 
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+
+
+5. Environment Testing
+___________________________
+- Modify Image Pull Policy for local image usage
+______________
+imagePullPolicy: IfNotPresent
+
+- Add deployment, controller & traefikio clusterrole & configure rbac kustomization.yaml
+______________
+config/rabac/deployment_clusterrole.yaml
+config/rabac/deployment_clusterrole_binding.yaml
+
+- configure config/manager/manager.yaml image tag
+______________
+image: traefik-operator-vX:latest
+
+- build docker image
+______________
+make docker-build <img-name>
+make docker-build traefik-operator-vX
+
+- load image into kind cluster
+______________
+kind load docker-image <img-name> --name <kind-cluster-context>
+kind load docker-image traefik-operator-vX --name edge-cluster
+
+- deploy operator
+______________
+make deploy
+
+- deploy test resources
+
+- access dashboard
+__________________________________________
+kubectl port-forward <pod-name> 8080:8080 
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
