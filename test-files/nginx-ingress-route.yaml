@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-forwarding
+  namespace: traefik
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`nginx.ingress.com`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: nginx-ingress-proxy
+          port: 80
+          scheme: http
