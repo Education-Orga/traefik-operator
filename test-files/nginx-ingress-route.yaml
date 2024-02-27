@@ -10,6 +10,6 @@ spec:
     - match: Host(`nginx.ingress.com`) && PathPrefix(`/`)
       kind: Rule
       services:
-        - name: nginx-ingress-proxy
+        - name: nginx-service
           port: 80
           scheme: http
