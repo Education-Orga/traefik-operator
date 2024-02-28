@@ -15,6 +15,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+// ControlTraefikDeployment manages the lifecycle of a Traefik deployment in Kubernetes, 
+// including creation and updates based on the TraefikInstance spec.
 func ControlTraefikDeployment(ctx context.Context, k8sClient client.Client, scheme *runtime.Scheme, traefikInstance *traefikv1alpha1.TraefikInstance, namespace string) error {
 
 	desiredDeployment := initTraefikDeployment(traefikInstance, scheme, namespace)
@@ -47,6 +49,8 @@ func ControlTraefikDeployment(ctx context.Context, k8sClient client.Client, sche
 	return nil
 }
 
+// initTraefikDeployment creates a Deployment object for Traefik using the provided instance 
+// spec, scheme, and namespace.
 func initTraefikDeployment(traefikInstance *traefikv1alpha1.TraefikInstance, scheme *runtime.Scheme, namespace string) *appsv1.Deployment {
 
 	// base configuration args for Traefik
@@ -81,6 +85,8 @@ func initTraefikDeployment(traefikInstance *traefikv1alpha1.TraefikInstance, sch
 	}
 }
 
+// initTraefikBaseConfiguration generates base and additional configuration 
+// arguments for a Traefik deployment from a TraefikInstance.
 func initTraefikBaseConfiguration(traefikInstance *traefikv1alpha1.TraefikInstance) []string {
 
 	// base configuration args for Traefik
