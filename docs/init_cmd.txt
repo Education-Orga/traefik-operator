@@ -1,1 +1,0 @@
-kubebuilder init --domain mh.edu.com --repo github.com/Education-Orga/traefik-operator
